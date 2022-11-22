@@ -3,14 +3,15 @@ provider:
   name: aws
   profile: aws-lambda-puppeteer
   region: ap-northeast-2
-  runtime: nodejs12.x
+  runtime: nodejs14.x
 
 plugins:
   - serverless-offline
-  
+
 functions:
   run:
     handler: handler.run
+    environment: ${file(env.json)}
     memorySize: 1536
     timeout: 30
     events:

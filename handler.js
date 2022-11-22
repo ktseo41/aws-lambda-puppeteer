@@ -1,7 +1,8 @@
 const chromium = require("chrome-aws-lambda");
+const TelegramBot = require("node-telegram-bot-api");
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 
-const korailUrl =
-  "https://www.letskorail.com/ebizprd/EbizPrdTicketPr21111_i1.do?&txtGoAbrdDt=20221125&txtGoHour=185000&selGoYear=2022&selGoMonth=11&selGoDay=25&selGoHour=15&txtGoPage=2&txtGoStartCode=0104&txtGoStart=%EC%9A%A9%EC%82%B0&txtGoEndCode=0030&txtGoEnd=%EC%9D%B5%EC%82%B0&selGoTrain=00&selGoRoom=&selGoRoom1=&txtGoTrnNo=&useSeatFlg=&useServiceFlg=&selGoSeat=&selGoService=&txtPnrNo=&hidRsvChgNo=&hidStlFlg=&radJobId=1&SeandYo=&hidRsvTpCd=03&selGoSeat1=015&selGoSeat2=&txtPsgCnt1=1&txtPsgCnt2=0&txtMenuId=11&txtPsgFlg_1=1&txtPsgFlg_2=0&txtPsgFlg_3=0&txtPsgFlg_4=0&txtPsgFlg_5=0&txtPsgFlg_8=0&chkCpn=N&txtSeatAttCd_4=015&txtSeatAttCd_3=000&txtSeatAttCd_2=000&txtGoStartCode2=&txtGoEndCode2=&hidDiscount=&hidEasyTalk=&adjcCheckYn=N";
+const url = "";
 
 module.exports.run = async (event, context) => {
   let result = null;
@@ -18,7 +19,7 @@ module.exports.run = async (event, context) => {
 
     let page = await browser.newPage();
 
-    await page.goto(korailUrl);
+    await page.goto(url);
 
     const timesAndAvailabilities = await page.evaluate(() =>
       Array.from(document.querySelectorAll("tr"))
@@ -40,6 +41,15 @@ module.exports.run = async (event, context) => {
           ([_, _availability]) => _availability === "예약하기"
         )
       : false;
+
+    if (result) {
+      await bot.sendMessage(
+        process.env.TELEGRAM_CHANNEL_ID,
+        `예약 가능한 시간대: ${result?.map?.(([time, _]) => time).join(", ")}`
+      );
+    }
+
+    console.log(result);
   } catch (error) {
     return {
       statusCode: 500,
