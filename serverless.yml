@@ -1,0 +1,19 @@
+service: aws-lambda-puppeteer
+provider:
+  name: aws
+  profile: aws-lambda-puppeteer
+  region: ap-northeast-2
+  runtime: nodejs12.x
+
+plugins:
+  - serverless-offline
+  
+functions:
+  run:
+    handler: handler.run
+    memorySize: 1536
+    timeout: 30
+    events:
+      - http:
+          path: /
+          method: get
