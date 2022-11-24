@@ -5,14 +5,22 @@ provider:
   region: ap-northeast-2
   runtime: nodejs14.x
 
+package:
+  patterns:
+    - "!layers/**"
+
 plugins:
   - serverless-offline
+  - serverless-latest-layer-version
 
 functions:
   run:
     handler: handler.run
     environment: ${file(env.json)}
-    memorySize: 1536
+    layers:
+      - arn:aws:lambda:ap-northeast-2:104955489769:layer:puppeteer-layer:latest
+
+    memorySize: 800
     timeout: 30
     events:
       - http:

@@ -2,7 +2,7 @@ const chromium = require("chrome-aws-lambda");
 const TelegramBot = require("node-telegram-bot-api");
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 
-const url = "";
+const url = process.env.TARGET_URL;
 
 module.exports.run = async (event, context) => {
   let result = null;
@@ -29,8 +29,8 @@ module.exports.run = async (event, context) => {
             .querySelector("td:nth-child(4)")
             .textContent.trim()}`,
           n.querySelector(
-            "td:nth-child(6) > a:first-child > img, td:nth-child(6) > img"
-          ).alt,
+            "td:nth-child(6) > a:first-child > img, td:nth-child(6) > p ~ a > img, td:nth-child(6) > img"
+          )?.alt,
         ])
     );
 

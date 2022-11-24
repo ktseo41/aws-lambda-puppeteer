@@ -1,0 +1,13 @@
+service: aws-lambda-puppeteer-layer
+provider:
+  name: aws
+  profile: aws-lambda-puppeteer
+  region: ap-northeast-2
+  runtime: nodejs14.x
+
+layers:
+  puppeteer-layer:
+    path: .
+    description: "Lambda Puppeteer Layer"
+    compatibleRuntimes:
+      - nodejs14.x
