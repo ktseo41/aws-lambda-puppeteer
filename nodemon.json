@@ -1,0 +1,11 @@
+{
+  "watch": [
+    "handler.js",
+    "src/**/*.js"
+  ],
+  "ignore": [
+    "node_modules"
+  ],
+  "exec": "sls offline --stage=dev",
+  "ext": "js"
+}

@@ -1,6 +1,4 @@
 const chromium = require("chrome-aws-lambda");
-const TelegramBot = require("node-telegram-bot-api");
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 
 const url = process.env.TARGET_URL;
 
@@ -21,35 +19,14 @@ module.exports.run = async (event, context) => {
 
     await page.goto(url);
 
-    const timesAndAvailabilities = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("tr"))
-        .filter((_, i, arr) => i !== 0 && i !== arr.length - 1)
-        .map((n) => [
-          `${n.querySelector("td:nth-child(3)").textContent.trim()} ~ ${n
-            .querySelector("td:nth-child(4)")
-            .textContent.trim()}`,
-          n.querySelector(
-            "td:nth-child(6) > a:first-child > img, td:nth-child(6) > p ~ a > img, td:nth-child(6) > img"
-          )?.alt,
-        ])
-    );
+    await page.type('#MEM_ID', process.env.ID);
+    await page.type('#MEM_PWD', process.env.PASSWORD);
+    await page.click('.loginBtn');
+    await page.waitForTimeout(500);
 
-    result = timesAndAvailabilities.some(
-      ([_, _availability]) => _availability === "예약하기"
-    )
-      ? timesAndAvailabilities.filter(
-          ([_, _availability]) => _availability === "예약하기"
-        )
-      : false;
-
-    if (result) {
-      await bot.sendMessage(
-        process.env.TELEGRAM_CHANNEL_ID,
-        `예약 가능한 시간대: ${result?.map?.(([time, _]) => time).join(", ")}`
-      );
-    }
-
-    console.log(result);
+    await page.goto('https://www.jeonjufest.kr/Ticket/timetable_day.asp');
+    await page.waitForSelector('.t_btn_type_01');
+    await page.click('.t_btn_type_01')
   } catch (error) {
     return {
       statusCode: 500,
@@ -59,7 +36,7 @@ module.exports.run = async (event, context) => {
     };
   } finally {
     if (browser !== null) {
-      await browser.close();
+      // await browser.close();
     }
   }
 
