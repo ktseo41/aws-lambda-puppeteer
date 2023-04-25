@@ -21,7 +21,7 @@ functions:
       - arn:aws:lambda:ap-northeast-2:104955489769:layer:puppeteer-layer:latest
 
     memorySize: 800
-    timeout: 30
+    timeout: 60
     events:
       - http:
           path: /
